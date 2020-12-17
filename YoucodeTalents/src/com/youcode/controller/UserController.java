@@ -1,16 +1,12 @@
 package com.youcode.controller;
-
-
-import java.math.BigInteger;
 import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Random;
 import java.util.Scanner;
-
 import com.youcode.config.Config;
+import com.youcode.enums.EnumMessage;
 import com.youcode.models.User;
 
 
@@ -37,6 +33,8 @@ public class UserController extends User{
 		ResultSet resultSet = statement.executeQuery(query);
 		String leftAlignFormat = "| %-15s | %-15s | %-15s | %-15s | %-15s |%n";
 		
+		
+		
 		System.out.format("+-----------------+-----------------------------------------------------+%n");
 		System.out.format("|       ID        ||      First_name      ||  last_Name   ||      Email     ||       Phone     |%n");
 		System.out.format("+-----------------+-----------------------------------------------------+%n");
@@ -51,6 +49,14 @@ public class UserController extends User{
 			//			
 		}
 	
+	
+	//phone number regex
+	  String phoneRegex = "^(\\+212|0)([ \\-_/]*)(\\d[ \\-_/]*){9}$";
+	//email regex
+	  String emilRegex = "^(.+)@(.+)$";
+	//check id   
+	  String rgexNum = "^[0-9]{9}$";
+	
 	  
 	  public void add() throws SQLException {
 		  
@@ -60,33 +66,67 @@ public class UserController extends User{
           long id = (long)(rd.nextDouble()*1000000000L);
 		  
 		  System.out.println("Enter the First_name");
-		  this.first_name = scanner.next();
+		  this.first_name = scanner.nextLine();
+		  
+		  //Validating first name
+		  if(first_name.length() < 3) {
+			  System.out.println(EnumMessage.FNAMEVALID.getLabel());
+			  add();
+		  }
 		  
 		  System.out.println("Enter the Last_name");
-		  this.last_name = scanner.next();
+		  this.last_name = scanner.nextLine();
+		  
+		  //Validating last name
+		  
+		  
+		  if(last_name.length() < 3) {
+			  System.out.println(EnumMessage.LNAMEVALID.getLabel());
+			  add();
+		  }
+		  
+		  
 		  System.out.println("Enter the Email");
-		  this.email = scanner.next();
+		  this.email = scanner.nextLine();
+		  
+		  //Validating email
+          if(email.matches(emilRegex)) {
+        	  //correct email format
+          }else {
+        	  System.out.println(EnumMessage.EMAILVALID.getLabel());
+        	  
+        	  add();
+          }
+          
 		  System.out.println("Enter the Phone");
-		  this.phone = scanner.next();
+		  this.phone = scanner.nextLine();
 		  
-		  String sqlString = "INSERT into users (id, first_name,last_name, email, phone)" + " values(?,?,?,?,?)";
+		  if(phone.matches(phoneRegex)) {
+			  
+        	  //correct Phone format
+          }else {
+        	  
+        	  System.out.println(EnumMessage.PHONEVALID.getLabel());
+        	  add();
+          }
+			/*insert*/
 		  
-		  java.sql.PreparedStatement statement = config.connect().prepareStatement(sqlString, Statement.RETURN_GENERATED_KEYS);
-		  	statement.setLong(1, id);
-			statement.setString(2, this.first_name);
-			statement.setString(3, this.last_name);
-			statement.setString(4, this.email);
-			statement.setString(5, this.phone);
-			statement.executeUpdate();
-		 
-		System.out.println("User added: " +id);
+		String sqlString = "INSERT into users (id, first_name,last_name, email, phone)" + " values(?,?,?,?,?)";
+		
+		java.sql.PreparedStatement statement = config.connect().prepareStatement(sqlString, Statement.RETURN_GENERATED_KEYS);
+		statement.setLong(1, id);
+		statement.setString(2, this.first_name);
+		statement.setString(3, this.last_name);
+		statement.setString(4, this.email);
+		statement.setString(5, this.phone);
+		statement.executeUpdate();
+		
+		System.out.println(EnumMessage.SIGNUP.getLabel()+id);
+		  
+		  	
 	  }
 	  
 	  public User finUserById() throws SQLException, ClassNotFoundException {
-		  
-		  
-			
-	        
 		  
 		  System.out.println("Enter the id user that you want");
 		  
@@ -111,9 +151,10 @@ public class UserController extends User{
 			  
 			  
 		  } else {
-			  System.out.println("Not existe");
 			  
-			  finUserById();
+			  
+			  System.out.println(EnumMessage.USERNOTFOUND.getLabel());
+				finUserById();
 			  
 		  } 
 
@@ -128,6 +169,15 @@ public class UserController extends User{
 			
 		  System.out.println("Enter your id:");
 		  String idstring = scanner.nextLine();
+		  
+		  
+		  if(idstring.matches(rgexNum)) {
+			   id = Long.parseLong(idstring);
+		  }else {
+              System.out.println(EnumMessage.ONLYDEGITID.getLabel());
+		  }
+		  
+		  
 		  long id = Long.parseLong(idstring);
 		  System.out.println("Enter your first name:");
 		  String first_name = scanner.nextLine();
@@ -139,6 +189,7 @@ public class UserController extends User{
 		  String phone = scanner.nextLine();
 		  String sqlString = "update  users SET  first_name=?, last_name=?, email=?, phone=? WHERE id=?";
 		  java.sql.PreparedStatement statement = connection.prepareStatement(sqlString);
+		  
 			statement.setString(1, first_name);
 			statement.setString(2, last_name);
 			statement.setString(3, email);

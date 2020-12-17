@@ -9,7 +9,7 @@ public class Administrator extends User {
 		this.password = password;
 	}
 	
-	public Administrator() {}
+//	public Administrator() {}
 
 	public String getPassword() {
 		return password;
@@ -19,25 +19,10 @@ public class Administrator extends User {
 		this.password = password;
 	}
 
+	
 	@Override
 	public String toString() {
 		return "Administrator [password =" + password + ", toString() =" + super.toString() + "]";
 	}
 	
-//	public ArrayList<User> findAllUsers(){}
-//	
-//	public void adminConnect(){}
-//	
-//	public ArrayList<Participation> findParticipations(){}
-//	
-//	public Participation findParticipationByEmail(){}
-//	
-//	public void validateParticipation(){}
-
-	
-	
-	
-	
-	
-
 }
