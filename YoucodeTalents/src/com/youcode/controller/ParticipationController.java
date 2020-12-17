@@ -86,8 +86,8 @@ public class ParticipationController {
     			addParticipation();
     		}
     		
-    		String query11 = "SELECT * FROM participation JOIN users ON participation.id_user=users.id WHERE participation.id_user="+id+" AND id="+category;
-     		PreparedStatement statement1 = connection.prepareStatement(query11);
+    		String query22 = "SELECT * FROM participation JOIN users ON participation.id_user=users.id WHERE participation.id_user="+id+" AND id="+category;
+     		PreparedStatement statement1 = connection.prepareStatement(query22);
      		ResultSet resultSet1 = statement1.executeQuery();
      			
      		if(resultSet1.next()) {
@@ -110,7 +110,8 @@ public class ParticipationController {
         		String startTime = scanner.nextLine();
         		Timestamp startTimestamp = null;
         		
-        											/*Time Format*/      
+        											/*Time Format*/    
+        		
         		
         		if(startTime.matches(timeRegex)) {
         			 startTimestamp = Timestamp.valueOf(startTime);
